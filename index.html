@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楊梅高中圖書館新生利用教育</title>
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFE66D;
+            --bg-color: #F7FFF7;
+            --text-color: #2F3542;
+            --card-bg: #FFFFFF;
+            --success-color: #2ED573;
+            --error-color: #FF4757;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', '微軟正黑體', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            font-size: 18px; /* 加大字體方便閱讀 */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--secondary-color);
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
+            width: 100%;
+            display: block;
+            margin: 20px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background-color: #45B7AF;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #E55050;
+        }
+
+        /* 手風琴摺疊樣式 */
+        .accordion-btn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 10px;
+            transition: 0.4s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .accordion-btn.active, .accordion-btn:hover {
+            background-color: #F4D03F;
+        }
+
+        .accordion-content {
+            padding: 0 15px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .content-inner {
+            padding: 15px 0;
+        }
+
+        /* 測驗題樣式 */
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #EEE;
+        }
+
+        .question-text {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .option-label {
+            display: block;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #F8F9FA;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #EDF2F7;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        input[type="radio"]:checked + span {
+            font-weight: bold;
+        }
+
+        .option-label.selected {
+            border-color: var(--secondary-color);
+            background-color: #E6FFFA;
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        /* 手機版微調 */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5em; }
+            body { font-size: 16px; }
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏫 楊梅高中圖書館<br>新生利用教育</h1>
+</header>
+
+<div class="container">
+    
+    <!-- Step 1: 填寫基本資料 -->
+    <div id="step-info" class="step active">
+        <div class="card">
+            <h2 style="text-align: center; color: var(--secondary-color);">👋 歡迎來到圖書館！</h2>
+            <p style="text-align: center;">請先填寫您的基本資料，再開始進行圖書館利用教育的閱讀與測驗。</p>
+            <div class="form-group">
+                <label for="class_name">📖 班級 (例如: 101)</label>
+                <input type="text" id="class_name" placeholder="請輸入班級" required>
+            </div>
+            <div class="form-group">
+                <label for="seat_number">🪑 座號 (例如: 5)</label>
+                <input type="number" id="seat_number" placeholder="請輸入座號" required>
+            </div>
+            <div class="form-group">
+                <label for="student_name">👤 姓名</label>
+                <input type="text" id="student_name" placeholder="請輸入姓名" required>
+            </div>
+            <button onclick="startReading()">開始閱讀說明 🚀</button>
+        </div>
+    </div>
+
+    <!-- Step 2: 互動式閱讀內容 -->
+    <div id="step-reading" class="step">
+        <div class="card">
+            <h2>📚 圖書館利用教育內容</h2>
+            <p>請仔細閱讀以下規定，點擊標題可以展開內容，閱讀完畢後即可開始測驗！</p>
+            
+            <button class="accordion-btn">一、環境導覽 🏢</button>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <ul>
+                        <li>圖書館一樓設有辦公區、讀者服務櫃台、期刊區、資訊檢索區、梅高特藏區、討論室和閱讀區，二樓為書庫和閱讀區。啟明樓一樓為喜閱學堂、四樓為紅土藝術空間。</li>
+                        <li>圖書館館舍<span class="highlight">開放時間：08:00～16:00</span>，第 8 堂為館務處理時間，未上輔導課的同學可以入館自習。<span class="highlight">打掃時間不得入館使用</span>（例外者需獲導師同意）。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="accordion-btn">二、圖書借還及續借規則 📖</button>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <ul>
+                        <li>借書請由一樓進入圖書館，至二樓書庫找書／取書，至一樓櫃台完成借書程序。</li>
+                        <li>由本校的圖書查詢系統：點選「學校首頁／圖書館圖書查詢」。</li>
+                        <li><strong>借書：</strong>請攜學生證，<span class="highlight">每人最多可借 4 本，借期 2 週</span>；請於開放日 16:00 前完成借書程序。</li>
+                        <li><strong>續借：</strong>若想延長借期，於到期日前 1～2 日到圖書館辦理，<span class="highlight">續借期為二週</span>。</li>
+                        <li><strong>還書：</strong>出借之圖書須於到期前至讀者服務櫃台辦理歸還。</li>
+                        <li><strong>逾期：</strong>圖書逾期歸還者將<span class="highlight">暫停圖書借閱權利</span>。累計每本書逾期天數為暫停借閱權限天數。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="accordion-btn">三、圖書館使用注意事項 ⚠️</button>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <ul>
+                        <li><span class="highlight">館內不得使用手機</span>（教師授課所需除外）。</li>
+                        <li>一樓置放當月期刊雜誌不外借，過期雜誌則移置於二樓書庫供讀者外借。</li>
+                        <li>線上資源、電子書請由學校首頁點選進入閱讀和借用。</li>
+                        <li>資訊檢索電腦不可連線任何不當網頁，違者經查證將受校規警告以上處分。</li>
+                        <li><strong>影印/列印：</strong>請自備悠遊卡<span class="highlight">(餘額 10 元以上)</span>，黑白每頁 2 元、彩色每頁 6 元。</li>
+                        <li><strong>掃描：</strong>請自備悠遊卡(餘額 10 元以上)，<span class="highlight">掃描只需過卡，無需付費</span>。</li>
+                        <li>梅高特藏區陳列刊物，不開放外借。<span class="highlight">漫畫書籍僅供在館閱讀，不開放外借</span>。</li>
+                        <li>公播版影音光碟限教職員工同仁借用。讀者借用家用版，不得公播使用。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="accordion-btn">四、進入圖書館後所需注意事項 🎒</button>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <ul>
+                        <li><span class="highlight">不可攜帶飲食（含礦泉水）</span>、書包等私人物品入館。</li>
+                        <li>不可大聲喧嘩、製造髒亂，並且避免奔跑。</li>
+                        <li>學生於上課時間進入圖書館須<span class="highlight">攜帶學生證登記並獲教師同意</span>，未帶學生證者不得留館。</li>
+                        <li>中午午休時間若無特殊原因，請同學回教室休息。若有急需處理，須經導師同意。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="btn-primary">我已閱讀完畢，開始測驗 📝</button>
+        </div>
+    </div>
+
+    <!-- Step 3: 測驗題 -->
+    <div id="step-quiz" class="step">
+        <div class="card">
+            <h2>🧠 知識小測驗</h2>
+            <p>共有 10 題選擇題，請選出最正確的答案。</p>
+            <div id="quiz-container"></div>
+            <button onclick="submitQuiz()">完成測驗，查看成績 🏆</button>
+        </div>
+    </div>
+
+    <!-- Step 4: 結果與送出 -->
+    <div id="step-result" class="step">
+        <div class="card">
+            <h2>🎉 測驗完成！</h2>
+            <div class="result-box">
+                <span id="final-score-text"></span> / 10 題
+            </div>
+            
+            <div class="form-group" style="margin-top: 30px;">
+                <label for="feedback">💡 測驗心得或對圖書館的建議 (選填)</label>
+                <textarea id="feedback" rows="4" placeholder="請寫下您的想法..."></textarea>
+            </div>
+            
+            <p style="text-align:center; color:#666; font-size:14px;">點擊下方按鈕將您的成績紀錄提交至雲端。</p>
+            <button id="submitBtn" onclick="sendToGoogleScript()" class="btn-primary">送出成績與紀錄 📤</button>
+        </div>
+    </div>
+
+    <!-- Step 5: 感謝畫面 -->
+    <div id="step-thankyou" class="step">
+        <div class="card" style="text-align: center;">
+            <h2 style="color: var(--success-color);">✅ 提交成功！</h2>
+            <p style="font-size: 60px; margin: 20px 0;">🙌</p>
+            <p>感謝您的參與，您已完成楊梅高中圖書館新生利用教育。</p>
+            <p>歡迎多多利用圖書館豐富的資源！</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ---------------- 音效合成器 (不需外部音檔) ----------------
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playSound(type) {
+        if (!audioCtx) return;
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'correct') { // 選擇選項時的音效
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); 
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'success') { // 過關/成功時的音效
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+            oscillator.frequency.setValueAtTime(554, audioCtx.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(659, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+    }
+    // ------------------------------------------------------------------
+
+    const questionsData = [
+        {
+            q: "1. 圖書館一樓的開放時間為何？",
+            options: ["08:00～16:00", "08:00～17:00", "09:00～16:00", "09:00～17:00"],
+            ans: 0
+        },
+        {
+            q: "2. 每位學生最多可以借幾本書？借期為多久？",
+            options: ["2本，1週", "3本，2週", "4本，2週", "5本，1週"],
+            ans: 2
+        },
+        {
+            q: "3. 圖書逾期歸還會有什麼罰則？",
+            options: ["罰款", "愛校服務", "暫停圖書借閱權利", "記警告"],
+            ans: 2
+        },
+        {
+            q: "4. 請問在圖書館內可以使用手機嗎？",
+            options: ["可以，只要靜音即可", "不行，但教師授課所需除外", "可以，僅限查資料", "隨時都可以使用"],
+            ans: 1
+        },
+        {
+            q: "5. 若要使用圖書館的影印或列印服務，悠遊卡餘額至少需要多少錢？",
+            options: ["10元", "50元", "100元", "不用錢"],
+            ans: 0
+        },
+        {
+            q: "6. 請問漫畫和當月期刊可以借回家看嗎？",
+            options: ["可以，借期一週", "可以，借期兩週", "不行，僅供在館閱讀", "只有漫畫可以外借"],
+            ans: 2
+        },
+        {
+            q: "7. 進入圖書館可以攜帶礦泉水嗎？",
+            options: ["可以", "不行", "只能帶水壺", "看館員規定"],
+            ans: 1
+        },
+        {
+            q: "8. 學生如果在「上課時間」想要進入圖書館，需要具備什麼條件？",
+            options: ["只要帶學生證即可", "攜帶學生證登記，並獲教師同意", "只要老師同意即可", "隨時都可以進入"],
+            ans: 1
+        },
+        {
+            q: "9. 中午午休時間，若無特殊原因可以到圖書館嗎？",
+            options: ["可以，圖書館是休息的好地方", "可以，只要不睡覺就好", "不行，請回教室休息", "可以，只要有老師陪同"],
+            ans: 2
+        },
+        {
+            q: "10. 若要使用圖書館的事務機進行「掃描」，收費方式為何？",
+            options: ["每頁2元", "每頁6元", "只需過悠遊卡，無需付費", "不用過卡，直接免費使用"],
+            ans: 2
+        }
+    ];
+
+    let currentScore = 0;
+
+    // 頁面切換邏輯
+    function showStep(stepId) {
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById(stepId).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function startReading() {
+        const c = document.getElementById('class_name').value.trim();
+        const s = document.getElementById('seat_number').value.trim();
+        const n = document.getElementById('student_name').value.trim();
+        
+        if(!c || !s || !n) {
+            alert('請完整填寫班級、座號與姓名喔！');
+            return;
+        }
+        initAudio(); // 初始化音效
+        showStep('step-reading');
+    }
+
+    // 閱讀內容摺疊邏輯
+    const accordions = document.querySelectorAll(".accordion-btn");
+    accordions.forEach(acc => {
+        acc.addEventListener("click", function() {
+            this.classList.toggle("active");
+            const panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    });
+
+    // 產生測驗題
+    function startQuiz() {
+        initAudio();
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        
+        questionsData.forEach((item, qIndex) => {
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = item.q;
+            block.appendChild(qText);
+            
+            item.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'q' + qIndex;
+                input.value = optIndex;
+                
+                input.addEventListener('change', function() {
+                    const siblings = document.querySelectorAll(`input[name="q${qIndex}"]`);
+                    siblings.forEach(sib => sib.parentElement.classList.remove('selected'));
+                    this.parentElement.classList.add('selected');
+                    playSound('correct'); 
+                });
+                
+                const span = document.createElement('span');
+                span.innerText = opt;
+                
+                label.appendChild(input);
+                label.appendChild(span);
+                block.appendChild(label);
+            });
+            container.appendChild(block);
+        });
+        
+        showStep('step-quiz');
+    }
+
+    // 計算成績
+    function submitQuiz() {
+        currentScore = 0;
+        let allAnswered = true;
+        
+        for (let i = 0; i < questionsData.length; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!selected) {
+                allAnswered = false;
+                break;
+            }
+            if (parseInt(selected.value) === questionsData[i].ans) {
+                currentScore++;
+            }
+        }
+        
+        if (!allAnswered) {
+            alert('請回答完所有題目再送出喔！');
+            return;
+        }
+        
+        document.getElementById('final-score-text').innerText = "答對 " + currentScore;
+        playSound('success');
+        showStep('step-result');
+    }
+
+    // 將資料送出至 Google Apps Script
+    function sendToGoogleScript() {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = '資料提交中，請稍候...';
+
+        const payload = {
+            class_name: document.getElementById('class_name').value.trim(),
+            seat_number: document.getElementById('seat_number').value.trim(),
+            name: document.getElementById('student_name').value.trim(),
+            score: currentScore,
+            feedback: document.getElementById('feedback').value.trim()
+        };
+
+        // ==============================================================
+        // 請將下方的網址替換為您的 Google Apps Script Web App URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbz-hDvDdBzb5l0BFzbhmHd2IbzNtYDBocNDeOC7vMiF_llkFw3sFtpz6N4cfR5WNbS0/exec'; 
+        // ==============================================================
+
+        fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors', // 使用 no-cors 避免跨網域阻擋
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            playSound('success');
+            showStep('step-thankyou');
+        }).catch(err => {
+            alert('提交發生錯誤，請檢查網路連線。(' + err + ')');
+            submitBtn.disabled = false;
+            submitBtn.innerText = '重新送出成績與紀錄';
+        });
+    }
+</script>
+
+</body>
+</html>
